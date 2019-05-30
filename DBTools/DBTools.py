@@ -2,6 +2,7 @@
 import xml.dom.minidom as xmldom
 from dbinfo import *
 from pbinfo import *
+from createdbfile import *
 
 #读取指定的配置文件
 def parse_config_xml(filename, objDBInfo, objPBList):
@@ -19,8 +20,9 @@ def parse_config_xml(filename, objDBInfo, objPBList):
 
     for pb_info in config_element.getElementsByTagName("PBClassInfo"):
         objPBInfo = CPBInfo()
-        objPBInfo.m_strPBPath = pb_info.getAttribute("PBFilePath")
-        objPBInfo.m_strPBName = pb_info.getAttribute("PBName")
+        objPBInfo.m_strPBPath   = pb_info.getAttribute("PBFilePath")
+        objPBInfo.m_strPBName   = pb_info.getAttribute("PBName")
+        objPBInfo.m_strFilePath = pb_info.getAttribute("FilePath")
         objPBList.append(objPBInfo)
 
 if __name__ == "__main__":
@@ -30,6 +32,11 @@ if __name__ == "__main__":
     #解析XML配置文件
     parse_config_xml('../Config/DB.xml', objDBInfo, objPBList)
 
+    #显示配置文件
     objDBInfo.Show()
     for objPBInfo in objPBList:
         objPBInfo.Show()
+
+    #创建文件
+    objCreateDBFile = CCreateDBFile()
+    objCreateDBFile.CreateDBFile(objDBInfo, objPBList)

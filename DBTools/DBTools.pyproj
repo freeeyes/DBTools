@@ -21,6 +21,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="createdbfile.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="dbinfo.py">
       <SubType>Code</SubType>
     </Compile>
