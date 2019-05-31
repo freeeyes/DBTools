@@ -76,9 +76,85 @@ class CCreateDBFile:
         finally:
             objFileCpp.close()
 
+    def CreateCommonFile(self, objDBInfo, objPBInfo):
+        try:
+            strDBFile = objPBInfo.m_strFilePath + "//tb_Common.h"
+            print("[CCreateDBFile::CreateCommonFile]strDBFile=%s" % strDBFile)
+            objFileHead = open(strDBFile, "w")
+            strline = "#ifndef TB_COMMON_H\n"
+            objFileHead.write(strline)
+            strline = "#define TB_COMMON_H\n\n"
+            objFileHead.write(strline)
+            strline = "#include <stdio.h>\n"
+            objFileHead.write(strline)
+            strline = "#include <stdlib.h>\n"
+            objFileHead.write(strline)
+            strline = "#include <mysql.h>\n\n"
+            objFileHead.write(strline)
+            strline = "MYSQL* Init_Mysql_Common();\n\n"
+            objFileHead.write(strline)
+            strline = "void Close_Mysql_Common(MYSQL* pConn);\n\n"
+            objFileHead.write(strline)
+            strline = "#endif\n"
+            objFileHead.write(strline)
+
+            strDBFile = objPBInfo.m_strFilePath + "//tb_Common.cpp"
+            print("[CCreateDBFile::CreateCommonFile]strDBFile=%s" % strDBFile)
+            objFileCpp = open(strDBFile, "w")
+            objFileCpp.write(strline)
+            strline = "#include \"tb_Common.h\"\n\n"
+            objFileCpp.write(strline)
+            strline = "MYSQL* Init_Mysql_Common()\n"
+            objFileCpp.write(strline)
+            strline = "{\n"
+            objFileCpp.write(strline)
+            strline = "\tif (mysql_library_init(0, NULL, NULL))\n"
+            objFileCpp.write(strline)
+            strline = "\t{\n"
+            objFileCpp.write(strline)
+            strline = "\t\tprintf(\"[Init_Mysql_Common]could not initialize MySQL library\\n\");\n"
+            objFileCpp.write(strline)
+            strline = "\t\treturn NULL;\n"
+            objFileCpp.write(strline)
+            strline = "\t}\n"
+            objFileCpp.write(strline)
+            strline = "\tMYSQL* pConn = new MYSQL();\n"
+            objFileCpp.write(strline)
+            strline = "\tmysql_init(pConn);\n"
+            objFileCpp.write(strline)
+            strline = "\tMYSQL *ret = mysql_real_connect(pConn, \"" + objDBInfo.m_strDBIP + "\", \"" + objDBInfo.m_strDBUser + "\", \"" + objDBInfo.m_strDBPass + "\", \"" + objDBInfo.m_strDBName + "\", " + objDBInfo.m_strDBPort + ", NULL, 0);\n"
+            objFileCpp.write(strline)
+            strline = "\tif(!ret)\n"
+            objFileCpp.write(strline)
+            strline = "\t{\n"
+            objFileCpp.write(strline)
+            strline = "\t\tprintf(\"[Init_Mysql_Common]Failed to connect to database:%s\\n\", mysql_error(pConn));\n"
+            objFileCpp.write(strline)
+            strline = "\t\treturn NULL;\n"
+            objFileCpp.write(strline)
+            strline = "\t}\n\n"
+            objFileCpp.write(strline)
+            strline = "\treturn pConn;\n\n"
+            objFileCpp.write(strline)
+            strline = "}\n\n"
+            objFileCpp.write(strline)
+
+            strline = "void Close_Mysql_Common(MYSQL* pConn)\n"
+            objFileCpp.write(strline)
+            strline = "{\n"
+            objFileCpp.write(strline)
+            strline = "\tmysql_close(pConn);\n"
+            objFileCpp.write(strline)
+            strline = "}\n\n"
+            objFileCpp.write(strline)
+
+        finally:
+            objFileHead.close()
+            objFileCpp.close()
 
     #创建数据库读写文件
     def CreateDBFile(self, objDBInfo, objPBList):
+        self.CreateCommonFile(objDBInfo, objPBList[0]);
         for objPBInfo in objPBList:
             self.CreateSingleFile(objDBInfo, objPBInfo)
     
