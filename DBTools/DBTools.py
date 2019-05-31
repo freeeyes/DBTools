@@ -20,9 +20,10 @@ def parse_config_xml(filename, objDBInfo, objPBList):
 
     for pb_info in config_element.getElementsByTagName("PBClassInfo"):
         objPBInfo = CPBInfo()
-        objPBInfo.m_strPBPath   = pb_info.getAttribute("PBFilePath")
-        objPBInfo.m_strPBName   = pb_info.getAttribute("PBName")
-        objPBInfo.m_strFilePath = pb_info.getAttribute("FilePath")
+        objPBInfo.m_strPBPath    = pb_info.getAttribute("PBFilePath")
+        objPBInfo.m_strPBName    = pb_info.getAttribute("PBName")
+        objPBInfo.m_strFilePath  = pb_info.getAttribute("FilePath")
+        objPBInfo.m_strTableName = pb_info.getAttribute("TableName") 
         objPBList.append(objPBInfo)
 
 if __name__ == "__main__":

@@ -2,5 +2,5 @@
 <config>
 	<DBInfo DBIP="127.0.0.1" DBPort="3306" DBName="TestDB" DBUser="aaa" DBPass="aaa" />
 
-	<PBClassInfo PBFilePath="./" PBName="aaa" FilePath="../File" />
+	<PBClassInfo PBFilePath="./" PBName="aaa" TableName="tb_aaa" FilePath="../File" />
 </config>
