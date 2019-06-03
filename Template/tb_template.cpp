@@ -2,7 +2,7 @@
 
 bool Save_aaa_Data(MYSQL* pConn, [pbName] obj[pbName])
 {
-	char szSQL[1024] = {'\0'}
+	char szSQL[2048] = {'\0'}
 
 	if(NULL == pConn)
 	{

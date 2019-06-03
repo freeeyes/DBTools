@@ -1,4 +1,3 @@
-#endif
 #include "tb_Common.h"
 
 MYSQL* Init_Mysql_Common()
@@ -10,7 +9,7 @@ MYSQL* Init_Mysql_Common()
 	}
 	MYSQL* pConn = new MYSQL();
 	mysql_init(pConn);
-	MYSQL *ret = mysql_real_connect(pConn, "[DBIP]", "[DBUser]", "[DBPass]", "[DBName]", [DBPort], NULL, 0);
+	MYSQL *ret = mysql_real_connect(pConn, "[DBIP]", "[DBUser]", "[DBPass]", "[DBName]", "[DBPort]", NULL, 0);
 	if(!ret)
 	{
 		printf("[Init_Mysql_Common]Failed to connect to database:%s\n", mysql_error(pConn));
