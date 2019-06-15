@@ -57,3 +57,37 @@ bool Load_[pbName]_Data(MYSQL* pConn, int nPalyerID, char* sz[pbName], int nLen)
 	return true;
 }
 
+bool Load_[pbName]_Data_List(MYSQL* pConn, int nPalyerID, vecpbData& objpbDataList)
+{
+	char szSQL[500] = {'\0'}
+	MYSQL_ROW sql_row;
+
+	if(NULL == pConn)
+	{
+		return false;
+	}
+	
+	sprintf(szSQL, "select hex(userdata) tb_[pbName]", 
+			nPalyerID);	
+			
+	int ret = mysql_query(pConn, szSQL);
+	if(ret != 0)
+	{
+		printf("[Save_[pbName]_Data_List]error:%s\n", mysql_error(pConn));
+		return false;
+	}
+	
+	MYSQL_RES *result = mysql_store_result(pConn);
+	if(NULL != result)
+	{
+		while(sql_row = mysql_fetch_row(result))
+		{
+			string strData = (string)sql_row[0];
+			objpbDataList.pushback(strData);
+		}
+	}
+
+	mysql_free_result(result);
+	return true;	
+}
+
