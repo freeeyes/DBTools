@@ -1,18 +1,20 @@
 #include "tb_[pbName].h"
 
-bool Save_[pbName]_Data(MYSQL* pConn, int nPalyerID, const char* sz[pbName], int nLen)
+bool Save_[pbName]_Data(MYSQL* pConn, int nPalyerID, int nTime, const char* sz[pbName], int nLen)
 {
-	char szSQL[8192] = {'\0'}
+	char szSQL[8192] = { '\0' };
 
 	if(NULL == pConn)
 	{
 		return false;
 	}
 
-	sprintf(szSQL, "INSERT INTO tb_[pbName](playerID, userdata, outtime) values(%d, x'%s', NOW()) ON DUPLICATE KEY UPDATE userdata=x'%s', outtime=NOW()", 
+	sprintf(szSQL, "INSERT INTO tb_[pbName](playerID, userdata, outtime) values(%d, x'%s', %d) ON DUPLICATE KEY UPDATE userdata=x'%s', outtime=%d", 
 			nPalyerID, 
 			sz[pbName],
-			sz[pbName]);
+			nTime,
+			sz[pbName],
+			nTime);
 
 	int ret = mysql_query(pConn, szSQL);
 	if(ret != 0)
@@ -25,15 +27,14 @@ bool Save_[pbName]_Data(MYSQL* pConn, int nPalyerID, const char* sz[pbName], int
 
 bool Load_[pbName]_Data(MYSQL* pConn, int nPalyerID, char* sz[pbName], int nLen)
 {
-	char szSQL[500] = {'\0'}
-	MYSQL_ROW sql_row;
+	char szSQL[8192] = { '\0' };
 
 	if(NULL == pConn)
 	{
 		return false;
 	}
 	
-	sprintf(szSQL, "select hex(userdata) tb_[pbName] where playerID='%s'", 
+	sprintf(szSQL, "select hex(userdata) tb_[pbName] where playerID=%d", 
 			nPalyerID);	
 			
 	int ret = mysql_query(pConn, szSQL);
@@ -46,6 +47,7 @@ bool Load_[pbName]_Data(MYSQL* pConn, int nPalyerID, char* sz[pbName], int nLen)
 	MYSQL_RES *result = mysql_store_result(pConn);
 	if(NULL != result)
 	{
+		MYSQL_ROW sql_row;
 		while(sql_row = mysql_fetch_row(result))
 		{
 			strcpy(sz[pbName], sql_row[0]);
@@ -57,18 +59,17 @@ bool Load_[pbName]_Data(MYSQL* pConn, int nPalyerID, char* sz[pbName], int nLen)
 	return true;
 }
 
-bool Load_[pbName]_Data_List(MYSQL* pConn, int nPalyerID, vecpbData& objpbDataList)
+bool Load_[pbName]_Data_List(MYSQL* pConn, int nTime, vecpbData& objpbDataList)
 {
-	char szSQL[500] = {'\0'}
-	MYSQL_ROW sql_row;
+	char szSQL[8192] = { '\0' };
 
 	if(NULL == pConn)
 	{
 		return false;
 	}
 	
-	sprintf(szSQL, "select hex(userdata) tb_[pbName]", 
-			nPalyerID);	
+	sprintf(szSQL, "select hex(userdata) tb_[pbName] where outtime < %d", 
+		nTime);
 			
 	int ret = mysql_query(pConn, szSQL);
 	if(ret != 0)
@@ -80,6 +81,7 @@ bool Load_[pbName]_Data_List(MYSQL* pConn, int nPalyerID, vecpbData& objpbDataLi
 	MYSQL_RES *result = mysql_store_result(pConn);
 	if(NULL != result)
 	{
+		MYSQL_ROW sql_row;
 		while(sql_row = mysql_fetch_row(result))
 		{
 			string strData = (string)sql_row[0];
